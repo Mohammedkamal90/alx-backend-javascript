@@ -1,9 +1,9 @@
 // File: 4-user-promise.js
 
-function signUpUser(firstName, lastName) {
+function signUpUser(firsName, lasName) {
   return Promise.resolve({
-    firstName: firstName,
-    lastName: lastName,
+    firstName: firsName,
+    lastName: lasName,
   });
 }
 
