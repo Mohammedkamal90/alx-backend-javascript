@@ -2,8 +2,8 @@
 
 function signUpUser(firstName, lastName) {
   return Promise.resolve({
-    firstname: firstName,
-    lastname: lastName,
+    firstName: firstName,
+    lastName: lastName,
   });
 }
 
