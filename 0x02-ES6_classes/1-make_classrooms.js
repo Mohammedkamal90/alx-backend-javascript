@@ -2,8 +2,12 @@
 import ClassRoom from './0-classroom.js';
 
 function initializeRooms() {
-  const sizes = [19, 20, 34];
-  const classrooms = sizes.map(size => new ClassRoom(size));
+  const classrooms = [
+    new ClassRoom(19),
+    new ClassRoom(20),
+    new ClassRoom(34),
+  ];
+
   return classrooms;
 }
 
