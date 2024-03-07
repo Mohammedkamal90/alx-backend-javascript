@@ -1,8 +1,8 @@
 // Filename: 10-car.js
 
-const _brand = Symbol('_brand');
-const _motor = Symbol('_motor');
-const _color = Symbol('_color');
+const _brand = ('_brand');
+const _motor = ('_motor');
+const _color = ('_color');
 
 export default class Car {
   constructor(brand, motor, color) {
