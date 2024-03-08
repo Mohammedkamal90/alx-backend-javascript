@@ -30,9 +30,9 @@ export default class Airport {
   }
 
   [Symbol.toPrimitive](hint) {
-    if (hint === 'string') {
+     if (hint === 'string') {
       return `[object ${this.code}]`;
     }
-    return this;
+    return.this;
   }
 }
