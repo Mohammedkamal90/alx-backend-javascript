@@ -7,3 +7,11 @@ namespace Subjects {
     experienceTeachingJava?: number;
   }
 }
+
+namespace Subjects {
+  export const cTeacher: Teacher = {
+    firstName: "John",
+    lastName: "Doe",
+    experienceTeachingC: 10
+  };
+}
