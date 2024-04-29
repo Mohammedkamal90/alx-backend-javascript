@@ -15,7 +15,7 @@ app.get('/', (req, res) => {
 // Define a route for the '/students' endpoint
 app.get('/students', async (req, res) => {
   try {
-    const data = await fs.readFile(process.argv[2], 'utf8');
+    await fs.readFile(process.argv[2], 'utf8');
     res.write('This is the list of our students\n');
     await countStudents(process.argv[2]);
   } catch (error) {
