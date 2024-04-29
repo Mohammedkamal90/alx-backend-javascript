@@ -17,12 +17,11 @@ function welcomeMessage() {
     if (input.length > 0) {
       process.stdout.write(`Your name is: ${input}\n`);
     }
+  });
 
-    // Display closing message
+  // Display closing message when the process is ending
+  process.on('exit', () => {
     process.stdout.write('This important software is now closing\n');
-
-    // End the process
-    process.exit(0);
   });
 }
 
