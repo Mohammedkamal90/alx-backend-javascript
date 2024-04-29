@@ -1,12 +1,8 @@
 // 5-http.js
 
 const http = require('http');
-const fs = require('fs');
-const { promisify } = require('util');
+const fs = require('fs').promises;
 const countStudents = require('./3-read_file_async');
-
-// Promisify fs.readFile for asynchronous file reading
-const readFileAsync = promisify(fs.readFile);
 
 // Create the HTTP server
 const app = http.createServer(async (req, res) => {
@@ -14,7 +10,7 @@ const app = http.createServer(async (req, res) => {
   res.writeHead(200, { 'Content-Type': 'text/plain' });
 
   // Parse the URL path
-  const url = req.url;
+  const { url } = req;
 
   // Define routes based on the URL path
   if (url === '/') {
@@ -23,7 +19,7 @@ const app = http.createServer(async (req, res) => {
   } else if (url === '/students') {
     // Handle the /students endpoint
     try {
-      const data = await readFileAsync(process.argv[2], 'utf8');
+      await fs.readFile(process.argv[2], 'utf8');
       res.write('This is the list of our students\n');
       await countStudents(process.argv[2]);
     } catch (error) {
