@@ -1,88 +1,83 @@
 const http = require('http');
-const fs = require('fs');
+const { readFile } = require('fs');
 
-const host = '127.0.0.1';
+const hostname = '127.0.0.1';
 const port = 1245;
 
-// Function to parse the CSV data and return an array of students
-function parseStudents(csvData) {
-  // Split data by new lines
-  const lines = csvData.trim().split('\n');
-  // Initialize students array
-  const students = [];
-  // Iterate over each line
-  for (const line of lines) {
-    // Split line by commas
-    const fields = line.split(',');
-    // Extract and trim student names
-    const names = fields.map((name) => name.trim());
-    // Add names to students array
-    students.push(names);
-  }
-  return students;
-}
+// Function to count students from a CSV file asynchronously
+function countStudents(fileName) {
+  return new Promise((resolve, reject) => {
+    // Initialize objects to store students and fields
+    const students = {};
+    const fields = {};
+    let length = 0;
 
-// Function to process students list and return the number of students in each field
-function getStudentsList(students) {
-  // Initialize counters
-  let csStudents = 0;
-  let sweStudents = 0;
-  // Initialize lists
-  const csList = [];
-  const sweList = [];
-  // Iterate over students
-  students.forEach((names) => {
-    // Check if student is in CS or SWE
-    if (names.includes('Guillaume') || names.includes('Joseph') || names.includes('Paul') || names.includes('Tommy')) {
-      sweStudents += 1;
-      sweList.push(...names);
-    } else {
-      csStudents += 1;
-      csList.push(...names);
-    }
+    // Read the CSV file
+    readFile(fileName, (err, data) => {
+      if (err) {
+        // Reject promise if there's an error reading the file
+        reject(err);
+      } else {
+        // Split the data into lines and process each line
+        const lines = data.toString().split('\n');
+        lines.forEach((line) => {
+          // Skip empty lines
+          if (line) {
+            length += 1; // Increment the total number of students
+            const field = line.split(','); // Split the line by comma
+            const [name, , , fieldKey] = field; // Extract name and field key
+
+            // Update students object
+            students[fieldKey] = students[fieldKey] || [];
+            students[fieldKey].push(name);
+
+            // Update fields object
+            fields[fieldKey] = (fields[fieldKey] || 0) + 1;
+          }
+        });
+
+        // Generate output string
+        const totalStudents = length - 1; // Exclude header line
+        let output = `Number of students: ${totalStudents}\n`;
+        for (const [key, value] of Object.entries(fields)) {
+          if (key !== 'field') { // Exclude 'field' key if present
+            output += `Number of students in ${key}: ${value}. `;
+            output += `List: ${students[key].join(', ')}\n`;
+          }
+        }
+        resolve(output); // Resolve promise with the output string
+      }
+    });
   });
-  // Generate response
-  const response = `Number of students: ${csStudents + sweStudents}\nNumber of students in CS: ${csStudents}. List: ${csList.join(', ')}\nNumber of students in SWE: ${sweStudents}. List: ${sweList.join(', ')}`;
-  return response;
 }
 
+// Create HTTP server
 const app = http.createServer((req, res) => {
-  // Set response headers
   res.statusCode = 200;
   res.setHeader('Content-Type', 'text/plain');
 
-  // Handle different routes
   if (req.url === '/') {
     // Handle root route
-    res.end('Hello Holberton School!\n');
+    res.write('Hello Holberton School!');
+    res.end();
   } else if (req.url === '/students') {
     // Handle students route
-    // Read the database file asynchronously
-    const databaseFile = process.argv[2]; // Get database file from command line arguments
-    if (!databaseFile) {
-      res.end('Error: Please provide the database file as an argument.\n');
-      return;
-    }
-    fs.readFile(databaseFile, 'utf8', (err, data) => {
-      if (err) {
-        res.end(`Error: Unable to read the database file (${databaseFile}).\n`);
-        return;
-      }
-      // Parse the data and process students list
-      const students = parseStudents(data);
-      const studentsList = getStudentsList(students);
-      // Send response
-      res.end(`This is the list of our students\n${studentsList}\n`);
-    });
-  } else {
-    // Handle unknown routes
-    res.end('404 Not Found\n');
+    res.write('This is the list of our students\n');
+    // Call countStudents function with the database file passed as argument
+    countStudents(process.argv[2].toString())
+      .then((output) => {
+        const outString = output.slice(0, -1); // Remove trailing newline
+        res.end(outString);
+      })
+      .catch(() => {
+        // Handle error if database file cannot be loaded
+        res.statusCode = 404;
+        res.end('Cannot load the database');
+      });
   }
 });
 
-// Start server and listen on specified host and port
-app.listen(port, host, () => {
-  console.log(`Server is running at http://${host}:${port}/`);
-});
+// Start listening on specified host and port
+app.listen(port, hostname);
 
-module.exports = app;
+module.exports = app; // Export the HTTP server
