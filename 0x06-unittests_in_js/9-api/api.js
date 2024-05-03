@@ -1,20 +1,16 @@
 const express = require('express');
-
 const app = express();
-const port = 7865;
 
-app.get('/', (req, res) => {
-  res.send('Welcome to the payment system');
-});
-
-// New endpoint for /cart/:id
 app.get('/cart/:id(\\d+)', (req, res) => {
-  const id = req.params.id;
-  res.send(`Payment methods for cart ${id}`);
+    const cartId = req.params.id;
+    // Here you can implement the logic to retrieve payment methods for the cart ID
+    res.send(`Payment methods for cart ${cartId}`);
 });
 
-app.listen(port, () => {
-  console.log(`API available on localhost port ${port}`);
+// Start the server
+const PORT = 7865;
+app.listen(PORT, () => {
+    console.log(`API available on localhost port ${PORT}`);
 });
 
-module.exports = app;
+module.exports = app; // Export the app for testing purposes
