@@ -1,17 +1,23 @@
-const express = require('express');
-const app = express();
+// api.test.js
 
-app.get('/', (req, res) => {
-  res.send('Welcome to the payment system');
+const request = require('request');
+const { expect } = require('chai');
+const app = require('./api');
+
+describe('Cart page', () => {
+  it('Correct status code when :id is a number?', (done) => {
+    request.get('http://localhost:7865/cart/12', (error, response) => {
+      if (error) return done(error);
+      expect(response.statusCode).to.equal(200);
+      done(); // Call done() when the test is complete
+    });
+  });
+
+  it('Correct status code when :id is NOT a number (=> 404)?', (done) => {
+    request.get('http://localhost:7865/cart/hello', (error, response) => {
+      if (error) return done(error);
+      expect(response.statusCode).to.equal(404);
+      done(); // Call done() when the test is complete
+    });
+  });
 });
-
-app.get('/cart/:id(\\d+)', (req, res) => {
-  const { id } = req.params;
-  res.send(`Payment methods for cart ${id}`);
-});
-
-app.listen(7865, () => {
-  console.log('API available on localhost port 7865');
-});
-
-module.exports = app; // Export the app for testing

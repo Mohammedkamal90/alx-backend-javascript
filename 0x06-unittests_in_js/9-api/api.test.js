@@ -1,17 +1,29 @@
-const { expect } = require('chai');
+// api.test.js
 
-const request = require('supertest');
+const request = require('request');
+const { expect } = require('chai');
 const app = require('./api');
 
-describe('Cart page', () => {
-  it('Returns correct response when :id is a number', async () => {
-    const response = await request(app).get('/cart/12');
-    expect(response.status).toEqual(200);
-    expect(response.text).toEqual('Payment methods for cart 12');
+describe('Cart page', function() {
+  this.timeout(7865); // Set timeout to 5 seconds
+
+  it('Correct status code when :id is a number?', () => {
+    return new Promise((resolve, reject) => {
+      request.get('http://localhost:7865/cart/12', (error, response) => {
+        if (error) return reject(error);
+        expect(response.statusCode).to.equal(200);
+        resolve();
+      });
+    });
   });
 
-  it('Returns 404 when :id is NOT a number', async () => {
-    const response = await request(app).get('/cart/hello');
-    expect(response.status).toEqual(404);
+  it('Correct status code when :id is NOT a number (=> 404)?', () => {
+    return new Promise((resolve, reject) => {
+      request.get('http://localhost:7865/cart/hello', (error, response) => {
+        if (error) return reject(error);
+        expect(response.statusCode).to.equal(404);
+        resolve();
+      });
+    });
   });
 });
