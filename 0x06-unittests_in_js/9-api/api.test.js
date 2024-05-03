@@ -11,8 +11,8 @@ describe('Cart page', () => {
         chai.request(app)
             .get('/cart/12')
             .end((err, res) => {
-                res.should.have.status(200);
-                done();
+                res.should.have.status(200); // Assertion to check the status code
+                done(); // Indicating the completion of the test case
             });
     });
 
@@ -20,8 +20,8 @@ describe('Cart page', () => {
         chai.request(app)
             .get('/cart/hello')
             .end((err, res) => {
-                res.should.have.status(404);
-                done();
+                res.should.have.status(404); // Assertion to check the status code
+                done(); // Indicating the completion of the test case
             });
     });
 
