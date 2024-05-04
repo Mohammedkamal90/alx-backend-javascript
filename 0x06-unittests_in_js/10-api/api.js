@@ -1,12 +1,12 @@
 const express = require('express');
-const app = express();
 
-const PORT = 7865;
+const app = express();
+const port = 7865;
 
 // Middleware to parse JSON bodies
 app.use(express.json());
 
-// Endpoint to get available payments
+// Endpoint to get available payment methods
 app.get('/available_payments', (req, res) => {
   res.json({
     payment_methods: {
@@ -19,11 +19,12 @@ app.get('/available_payments', (req, res) => {
 // Endpoint to handle user login
 app.post('/login', (req, res) => {
   const { userName } = req.body;
-  res.send(`Welcome ${userName}`);
+  res.status(200).json({ message: `Welcome ${userName}` });
 });
 
-app.listen(PORT, () => {
-  console.log(`API available on localhost port ${PORT}`);
+// Start the server
+const server = app.listen(port, () => {
+  console.log(`API available on localhost port ${port}`);
 });
 
-module.exports = app; // Export the app for testing purposes
+module.exports = server;
